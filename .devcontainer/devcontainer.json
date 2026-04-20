@@ -1,0 +1,16 @@
+{
+	"name": "Java Spring Boot",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"vscjava.vscode-java-pack",
+				"pivotal.vscode-boot-dev-pack"
+			]
+		}
+	},
+	"forwardPorts": [8080],
+	"postCreateCommand": "mvn clean install -DskipTests"
+}
