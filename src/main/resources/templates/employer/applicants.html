@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="dashboard-container">
+        <header style="margin-bottom: 2rem;">
+            <a th:href="@{/employer/dashboard}" style="color: var(--primary-color); text-decoration: none; font-size: 0.9rem;"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <h1 style="margin-top: 1rem;">Applicants for <span th:text="${job.title}" style="color: var(--primary-color)">Software Engineer</span></h1>
+            <p style="color: var(--text-muted)">Review and manage candidates who have applied for this position.</p>
+        </header>
+
+        <div class="table-container glass" style="padding: 1.5rem;">
+            <table id="applicantsTable">
+                <thead>
+                    <tr>
+                        <th>Candidate Name</th>
+                        <th>Skills</th>
+                        <th>Status</th>
+                        <th>Applied Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="app : ${applications}">
+                        <td>
+                            <div style="font-weight: 600;" th:text="${app.student.name}">Jane Smith</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted)" th:text="${app.student.email}">jane@example.com</div>
+                        </td>
+                        <td>
+                            <div style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                <span th:each="skill : ${#strings.arraySplit(app.student.skills, ',')}" 
+                                      class="badge" style="background: rgba(255,255,255,0.05); font-size: 0.7rem; color: white; margin-right: 2px;" 
+                                      th:text="${skill.trim()}">Java</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span th:class="'badge ' + ${app.status.toLowerCase()}" 
+                                  th:text="${app.status}"
+                                  th:style="${app.status == 'SHORTLISTED' ? 'background: #22c55e33; color: #22c55e;' : (app.status == 'REJECTED' ? 'background: #ef444433; color: #ef4444;' : 'background: #6366f133; color: #6366f1;')}">
+                                Applied
+                            </span>
+                        </td>
+                        <td th:text="${#temporals.format(app.appliedDate, 'dd MMM yyyy')}">20 Apr 2026</td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <button class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;" 
+                                        th:onclick="alert('Cover Letter: ' + [[${app.coverLetter}]])">Detail</button>
+                                
+                                <form th:if="${app.status == 'APPLIED'}" th:action="@{/employer/application/{id}/status(id=${app.id})}" method="post" style="display: inline;">
+                                    <input type="hidden" name="status" value="SHORTLISTED">
+                                    <button type="submit" class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; background: #22c55e; border: none;"><i class="fas fa-check"></i></button>
+                                </form>
+                                <form th:if="${app.status == 'APPLIED'}" th:action="@{/employer/application/{id}/status(id=${app.id})}" method="post" style="display: inline;">
+                                    <input type="hidden" name="status" value="REJECTED">
+                                    <button type="submit" class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; background: #ef4444; border: none;"><i class="fas fa-times"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${applications.empty}">
+                        <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-muted)">No applicants yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="dashboard-container" style="max-width: 800px; margin: 0 auto;">
+        <header style="margin-bottom: 2rem;">
+            <h1 th:text="${job.id == null ? 'Post a New Job' : 'Edit Job Listing'}">Post a Job</h1>
+            <p style="color: var(--text-muted)">Reach thousands of talented candidates instantly.</p>
+        </header>
+
+        <form th:action="${job.id == null ? '/employer/job/post' : '/employer/job/edit/' + job.id}" th:object="${job}" method="post" class="glass" style="padding: 3rem;">
+            <div class="form-group">
+                <label>Job Title</label>
+                <input type="text" th:field="*{title}" required placeholder="e.g. Senior Java Developer">
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select th:field="*{category}" required>
+                        <option value="Software Development">Software Development</option>
+                        <option value="Design">Design</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Sales">Sales</option>
+                        <option value="Product Management">Product Management</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" th:field="*{location}" required placeholder="Remote, New York, etc.">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label>Salary Range</label>
+                    <input type="text" th:field="*{salary}" required placeholder="$80k - $120k">
+                </div>
+                <div class="form-group">
+                    <label>Experience Required</label>
+                    <select th:field="*{experienceRequired}">
+                        <option value="Entry Level">Entry Level</option>
+                        <option value="1-3 Years">1-3 Years</option>
+                        <option value="3-5 Years">3-5 Years</option>
+                        <option value="5+ Years">5+ Years</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Required Skills (Comma separated)</label>
+                <input type="text" th:field="*{requiredSkills}" required placeholder="Java, AWS, Docker, Kubernetes">
+            </div>
+
+            <div class="form-group">
+                <label>Job Description</label>
+                <textarea th:field="*{description}" rows="6" required placeholder="Describe the role, responsibilities, and benefits..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                <span th:text="${job.id == null ? 'Publish Job Listing' : 'Update Job Listing'}">Publish Job</span>
+            </button>
+        </form>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

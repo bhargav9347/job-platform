@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="dashboard-container">
+        <header style="margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1>Employer Dashboard</h1>
+                <p style="color: var(--text-muted)">Manage your job postings and applicants globally.</p>
+            </div>
+            <a th:href="@{/employer/job/post}" class="btn btn-primary"><i class="fas fa-plus"></i> Post New Job</a>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card glass">
+                <h4>Active Jobs</h4>
+                <div class="value" th:text="${totalJobs}">5</div>
+            </div>
+            <div class="stat-card glass">
+                <h4>Total Applicants</h4>
+                <div class="value" th:text="${totalApplicants}">124</div>
+            </div>
+            <div class="stat-card glass">
+                <h4>Shortlisted</h4>
+                <div class="value" style="color: #22c55e" th:text="${shortlistedCount}">12</div>
+            </div>
+            <div class="stat-card glass">
+                <h4>Success Rate</h4>
+                <div class="value" th:text="${totalApplicants > 0 ? (shortlistedCount * 100 / totalApplicants) + '%' : '0%'}">10%</div>
+            </div>
+        </section>
+
+        <section>
+            <h2>My Job Listings</h2>
+            <div class="table-container glass" style="padding: 1.5rem;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Posted Date</th>
+                            <th>Applicants</th>
+                            <th>Location</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="job : ${jobs}">
+                            <td th:text="${job.title}" style="font-weight: 600;">Backend Developer</td>
+                            <td th:text="${#temporals.format(job.postedDate, 'dd MMM yyyy')}">15 Apr 2026</td>
+                            <td>
+                                <a th:href="@{/employer/job/{id}/applicants(id=${job.id})}" class="badge" 
+                                   style="background: var(--primary-color); color: white; text-decoration: none;">
+                                   <span th:text="${job.applications.size()}">0</span> Applicants
+                                </a>
+                            </td>
+                            <td th:text="${job.location}">Remote</td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <a th:href="@{/employer/job/edit/{id}(id=${job.id})}" class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;"><i class="fas fa-edit"></i></a>
+                                    <a th:href="@{/employer/job/delete/{id}(id=${job.id})}" class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem; border-color: #ef4444; color: #ef4444;" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${jobs.empty}">
+                            <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-muted)">You haven't posted any jobs yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <main style="max-width: 900px; margin: 4rem auto; padding: 0 2rem;">
+        <div class="glass" style="padding: 3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
+                <div>
+                    <div class="badge" th:text="${job.category}">Category</div>
+                    <h1 th:text="${job.title}" style="margin-top: 1rem; font-size: 2.5rem;">Software Engineer</h1>
+                    <p class="meta" style="font-size: 1.1rem; margin-top: 0.5rem;">
+                        <i class="fas fa-building"></i> <span th:text="${job.employer.name}">Google</span> &nbsp;
+                        <i class="fas fa-map-marker-alt"></i> <span th:text="${job.location}">Remote</span>
+                    </p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary-color)" th:text="${job.salary}">$120k</div>
+                    <div style="color: var(--text-muted); font-size: 0.9rem;">Annual Salary</div>
+                </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 2rem 0;">
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">Job Description</h3>
+                <p th:text="${job.description}" style="white-space: pre-line;">Full description here...</p>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <h3 style="margin-bottom: 1rem;">Required Skills</h3>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <span th:each="skill : ${#strings.arraySplit(job.requiredSkills, ',')}" 
+                          class="badge" style="background: rgba(255,255,255,0.05); color: white;" 
+                          th:text="${skill.trim()}">Java</span>
+                </div>
+            </div>
+
+            <div sec:authorize="hasRole('STUDENT')" style="margin-top: 3rem; background: var(--bg-dark); padding: 2rem; border-radius: 12px;">
+                <h3>Apply for this position</h3>
+                <form th:action="@{/student/apply/{id}(id=${job.id})}" method="post" style="margin-top: 1rem;">
+                    <div class="form-group">
+                        <label>Why are you a good fit? (Cover Letter)</label>
+                        <textarea name="coverLetter" rows="4" required placeholder="Tell the employer about your relevant experience..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Application</button>
+                </form>
+            </div>
+
+            <div sec:authorize="isAnonymous()" style="margin-top: 3rem; text-align: center; padding: 2rem; border: 1px dashed var(--glass-border); border-radius: 12px;">
+                <p>Please <a th:href="@{/login}" style="color: var(--primary-color)">Login</a> as a Student to apply for this job.</p>
+            </div>
+            
+            <div sec:authorize="hasAnyRole('EMPLOYER', 'ADMIN')" style="margin-top: 3rem; text-align: center; color: var(--text-muted)">
+                Only students can apply for jobs.
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

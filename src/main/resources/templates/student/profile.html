@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="dashboard-container" style="max-width: 800px; margin: 0 auto;">
+        <header style="margin-bottom: 2rem;">
+            <h1>My Profile</h1>
+            <p style="color: var(--text-muted)">Keep your profile updated to attract better opportunities.</p>
+        </header>
+
+        <div th:if="${param.success}" class="badge" style="background: rgba(34, 197, 94, 0.2); color: #22c55e; width: 100%; text-align: center; margin-bottom: 2rem; padding: 0.8rem;">
+            Profile updated successfully!
+        </div>
+
+        <form th:action="@{/student/profile/update}" method="post" enctype="multipart/form-data" class="glass" style="padding: 3rem;">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" th:value="${user.name}" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Your Email (Cannot be changed)</label>
+                <input type="email" th:value="${user.email}" disabled style="opacity: 0.6; cursor: not-allowed;">
+            </div>
+
+            <div class="form-group">
+                <label>Skills (Comma separated)</label>
+                <input type="text" name="skills" th:value="${user.skills}" placeholder="Java, Spring Boot, React, AWS">
+            </div>
+
+            <div class="form-group">
+                <label>Experience (Years or brief summary)</label>
+                <textarea name="experience" rows="3" th:text="${user.experience}" placeholder="2 years as Junior Dev at TechCorp..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Education</label>
+                <input type="text" name="education" th:value="${user.education}" placeholder="B.Tech in Computer Science">
+            </div>
+
+            <div class="form-group">
+                <label>Resume (PDF/Doc)</label>
+                <p th:if="${user.resumePath}" style="font-size: 0.8rem; color: var(--primary-color); margin-bottom: 0.5rem;">
+                    <i class="fas fa-file-pdf"></i> Current Resume: <span th:text="${user.resumePath}">resume.pdf</span>
+                </p>
+                <input type="file" name="resume" accept=".pdf,.doc,.docx">
+                <small style="color: var(--text-muted)">Upload a new resume to update.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem;">Save Profile Changes</button>
+        </form>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

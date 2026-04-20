@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="dashboard-container">
+        <header style="margin-bottom: 3rem;">
+            <h1>Student Dashboard</h1>
+            <p style="color: var(--text-muted)">Welcome back, <span th:text="${user.name}">Student</span>. Track your career progress here.</p>
+        </header>
+
+        <section>
+            <h2>My Applications</h2>
+            <div class="table-container glass" style="padding: 1.5rem;">
+                <table id="applicationsTable">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="app : ${applications}">
+                            <td th:text="${app.job.title}" style="font-weight: 600;">Full Stack Dev</td>
+                            <td th:text="${app.job.employer.name}">Google</td>
+                            <td th:text="${#temporals.format(app.appliedDate, 'dd MMM yyyy')}">20 Apr 2026</td>
+                            <td>
+                                <span th:class="'badge ' + ${app.status.toLowerCase()}" 
+                                      th:text="${app.status}"
+                                      th:style="${app.status == 'SHORTLISTED' ? 'background: #22c55e33; color: #22c55e;' : (app.status == 'REJECTED' ? 'background: #ef444433; color: #ef4444;' : 'background: #6366f133; color: #6366f1;')}">
+                                    Applied
+                                </span>
+                            </td>
+                            <td>
+                                <a th:href="@{/job/{id}(id=${app.job.id})}" class="btn btn-outline" style="padding: 0.3rem 0.8rem; font-size: 0.8rem;">View Job</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${applications.empty}">
+                            <td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-muted)">You haven't applied for any jobs yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

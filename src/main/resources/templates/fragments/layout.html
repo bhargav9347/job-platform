@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobVista - Modern Job Portal</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav th:fragment="navbar">
+        <a th:href="@{/}" class="logo">JobVista</a>
+        <div class="nav-links">
+            <a th:href="@{/}">Browse Jobs</a>
+            
+            <!-- Student Links -->
+            <div sec:authorize="hasRole('STUDENT')" style="display: flex; gap: 1.5rem;">
+                <a th:href="@{/student/dashboard}">My Applications</a>
+                <a th:href="@{/student/profile}">Profile</a>
+            </div>
+            
+            <!-- Employer Links -->
+            <div sec:authorize="hasRole('EMPLOYER')" style="display: flex; gap: 1.5rem;">
+                <a th:href="@{/employer/dashboard}">Dashboard</a>
+                <a th:href="@{/employer/job/post}">Post a Job</a>
+            </div>
+
+            <!-- Auth Links -->
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" class="btn btn-outline" style="margin-right: 1rem;">Login</a>
+                <a th:href="@{/register}" class="btn btn-primary">Sign Up</a>
+            </div>
+            
+            <div sec:authorize="isAuthenticated()" style="display: flex; items-center: center; gap: 1rem;">
+                <span style="color: var(--text-muted)">Welcome, <span th:text="${#authentication.name}" style="color: white; font-weight: 600;">User</span></span>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-outline" style="padding: 0.4rem 1rem;">Logout</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <footer th:fragment="footer">
+        <div class="footer-content">
+            <p>&copy; 2026 JobVista Portal. Built with Passion for Next-Gen Careers.</p>
+        </div>
+    </footer>
+</body>
+</html>
